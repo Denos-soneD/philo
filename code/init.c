@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 17:15:16 by machrist          #+#    #+#             */
-/*   Updated: 2024/02/29 18:24:30 by machrist         ###   ########.fr       */
+/*   Updated: 2024/02/29 19:00:50 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ bool	init_threads(t_philo *philo)
 	return (false);
 }
 
-void	set_philosopher(t_philo *philo, long long i)
+void	set_philosopher(t_philo *philo, long long i, int ac, char **av)
 {
 	philo->philosopher[i].id = i;
 	philo->philosopher[i].id_right = (i + 1) % philo->nb_philo;
@@ -68,7 +68,18 @@ void	set_philosopher(t_philo *philo, long long i)
 	if (philo->nb_philo > 1)
 		philo->fork[i] = 1;
 	else
-		philo->fork[i] = 0;	
+		philo->fork[i] = 0;
+	if (i == 0)
+		philo->philosopher[i].id_left = philo->nb_philo - 1;
+	else
+		philo->philosopher[i].id_left = i - 1;
+	philo->philosopher[i].time_to_die = ft_atoi(av[2]);
+	philo->philosopher[i].time_to_eat = ft_atoi(av[3]);
+	philo->philosopher[i].time_to_sleep = ft_atoi(av[4]);
+	if (ac == 5)
+		philo->philosopher[i].nb_eat = -1;
+	if (ac == 6)
+		philo->philosopher[i].nb_eat = ft_atoi(av[5]);
 }
 
 void	init_philosopher(t_philo *philo, int ac, char **av)
@@ -77,20 +88,7 @@ void	init_philosopher(t_philo *philo, int ac, char **av)
 
 	i = -1;
 	while (++i < philo->nb_philo)
-	{
-		set_philosopher(philo, i);
-		if (i == 0)
-			philo->philosopher[i].id_left = philo->nb_philo - 1;
-		else
-			philo->philosopher[i].id_left = i - 1;
-		philo->philosopher[i].time_to_die = ft_atoi(av[2]);
-		philo->philosopher[i].time_to_eat = ft_atoi(av[3]);
-		philo->philosopher[i].time_to_sleep = ft_atoi(av[4]);
-		if (ac == 5)
-			philo->philosopher[i].nb_eat = -1;
-		if (ac == 6)
-			philo->philosopher[i].nb_eat = ft_atoi(av[5]);
-	}
+		set_philosopher(philo, i, ac, av);
 }
 
 bool	init_philo(t_philo *philo, int ac, char **av)
