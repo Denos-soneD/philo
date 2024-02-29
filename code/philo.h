@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 16:17:33 by machrist          #+#    #+#             */
-/*   Updated: 2024/02/21 15:26:28 by machrist         ###   ########.fr       */
+/*   Updated: 2024/02/29 16:36:37 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,9 @@ typedef struct s_philospher
 {
 	int					id;
 	bool				*is_dead;
-	int					*nb_fork;
+	int					*fork;
+	int					id_left;
+	int					id_right;
 	unsigned long long	time_to_die;
 	unsigned long long	time_to_eat;
 	unsigned long long	time_to_sleep;
@@ -44,7 +46,8 @@ typedef struct s_philospher
 	unsigned long long	*start;
 	unsigned long long	last_meal;
 	pthread_t			th;
-	pthread_mutex_t		*mutex;
+	pthread_mutex_t		*is_dead_mutex;
+	pthread_mutex_t		*forks_mutex;
 }						t_philosopher;
 
 void					print_msg(t_philosopher *philosopher, char *msg);
@@ -52,11 +55,12 @@ void					print_msg(t_philosopher *philosopher, char *msg);
 typedef struct s_philo
 {
 	int					nb_philo;
-	int					nb_fork;
 	unsigned long long	start;
 	bool				is_dead;
+	int					*fork;
 	t_philosopher		*philosopher;
-	pthread_mutex_t		mutex;
+	pthread_mutex_t		is_dead_mutex;
+	pthread_mutex_t		forks_mutex;
 }						t_philo;
 
 int						ft_atoi(const char *str);
