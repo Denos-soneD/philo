@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 17:15:16 by machrist          #+#    #+#             */
-/*   Updated: 2024/02/29 19:00:50 by machrist         ###   ########.fr       */
+/*   Updated: 2024/05/21 14:18:40 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,10 @@ bool	init_philo(t_philo *philo, int ac, char **av)
 	philo->fork = malloc(sizeof(int) * philo->nb_philo);
 	if (!philo->philosopher || !philo->fork)
 	{
+		if (!philo->philosopher)
+			philo->philosopher = NULL;
+		if (!philo->fork)
+			philo->fork = NULL;
 		free_philo(philo, MSG_MALLOC);
 		return (true);
 	}
