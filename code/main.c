@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 16:17:36 by machrist          #+#    #+#             */
-/*   Updated: 2024/02/29 16:43:31 by machrist         ###   ########.fr       */
+/*   Updated: 2024/06/04 20:51:25 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,8 @@ int	main(int ac, char **av)
 		return (1);
 	if (init_threads(&philo))
 		return (1);
-	free(philo.philosopher);
-	free(philo.fork);
 	pthread_mutex_destroy(&philo.is_dead_mutex);
-	pthread_mutex_destroy(&philo.forks_mutex);
+	destroy_forks_mutex(&philo);
+	free(philo.philosopher);
 	return (0);
 }

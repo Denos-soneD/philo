@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 20:01:12 by machrist          #+#    #+#             */
-/*   Updated: 2024/02/29 18:28:39 by machrist         ###   ########.fr       */
+/*   Updated: 2024/06/04 22:06:16 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,29 +39,13 @@ bool	check_is_dead(t_philosopher *philosopher, int act)
 	return (false);
 }
 
-void	check_forks(t_philosopher *philosopher)
+void	start_eating(t_philosopher *philosopher)
 {
-	if (philosopher->fork[philosopher->id]
-		&& philosopher->fork[philosopher->id_right])
-	{
-		philosopher->fork[philosopher->id] -= 1;
-		philosopher->fork[philosopher->id_right] -= 1;
-		print_msg(philosopher, MSG_FORK);
-	}
-	else if (philosopher->fork[philosopher->id_right]
-		&& philosopher->fork[philosopher->id_left])
-	{
-		philosopher->fork[philosopher->id_right] -= 1;
-		philosopher->fork[philosopher->id_left] -= 1;
-		print_msg(philosopher, MSG_FORK);
-		print_msg(philosopher, MSG_FORK);
-	}
-	else
-		printf("Error: philosopher can't take a fork\n");
-}
-
-void	start_sleeping(t_philosopher *philosopher)
-{
+	print_msg(philosopher, MSG_EAT);
+	philosopher->last_meal = get_time_ms();
+	usleep(philosopher->time_to_eat * 1000);
+	philosopher->nb_eat--;
+	philosopher_unlock_forks(philosopher);
 	print_msg(philosopher, MSG_SLEEP);
 	if (check_is_dead(philosopher, SLEEP))
 		return ;
@@ -69,18 +53,40 @@ void	start_sleeping(t_philosopher *philosopher)
 	print_msg(philosopher, MSG_THINK);
 }
 
-void	start_eating(t_philosopher *philosopher)
+bool	check_one_philo(t_philosopher *philosopher)
 {
-	check_forks(philosopher);
-	pthread_mutex_unlock(philosopher->forks_mutex);
-	print_msg(philosopher, MSG_EAT);
-	philosopher->last_meal = get_time_ms();
-	usleep(philosopher->time_to_eat * 1000);
-	pthread_mutex_lock(philosopher->forks_mutex);
-	philosopher->fork[philosopher->id] = 2;
-	pthread_mutex_unlock(philosopher->forks_mutex);
-	philosopher->nb_eat--;
-	start_sleeping(philosopher);
+	if (*philosopher->nb_philo == 1)
+	{
+		usleep(philosopher->time_to_die * 1000);
+		if (philosopher->id % 2 == 0)
+			pthread_mutex_unlock(&philosopher->forks_mutex_left);
+		else
+			pthread_mutex_unlock(philosopher->forks_mutex_right);
+		return (check_is_dead(philosopher, SLEEP));
+	}
+	return (false);
+}
+
+bool	take_fork(t_philosopher *philosopher)
+{
+	if (philosopher->id % 2 == 0)
+	{
+		pthread_mutex_lock(&philosopher->forks_mutex_left);
+		print_msg(philosopher, MSG_FORK);
+		if (check_one_philo(philosopher))
+			return (true);
+		pthread_mutex_lock(philosopher->forks_mutex_right);
+	}
+	else
+	{
+		pthread_mutex_lock(philosopher->forks_mutex_right);
+		print_msg(philosopher, MSG_FORK);
+		if (check_one_philo(philosopher))
+			return (true);
+		pthread_mutex_lock(&philosopher->forks_mutex_left);
+	}
+	print_msg(philosopher, MSG_FORK);
+	return (false);
 }
 
 void	*routine(void *arg)
@@ -90,18 +96,11 @@ void	*routine(void *arg)
 	philosopher = (t_philosopher *)arg;
 	if (philosopher->id % 2)
 		usleep(60000);
-	while (1)
+	while (!check_is_dead(philosopher, THINK))
 	{
-		pthread_mutex_lock(philosopher->forks_mutex);
-		if ((philosopher->fork[philosopher->id]
-				&& philosopher->fork[philosopher->id_right])
-			|| (philosopher->fork[philosopher->id_right]
-				&& philosopher->fork[philosopher->id_left]))
-			start_eating(philosopher);
-		else
-			pthread_mutex_unlock(philosopher->forks_mutex);
-		if (check_is_dead(philosopher, THINK))
+		if (take_fork(philosopher))
 			return (NULL);
+		start_eating(philosopher);
 	}
 	return (NULL);
 }
