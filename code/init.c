@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 17:15:16 by machrist          #+#    #+#             */
-/*   Updated: 2024/06/04 22:06:03 by machrist         ###   ########.fr       */
+/*   Updated: 2024/06/06 19:15:46 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void	set_philosopher(t_philo *philo, long long i, int ac, char **av)
 	philo->philosopher[i].time_to_die = ft_atoi(av[2]);
 	philo->philosopher[i].time_to_eat = ft_atoi(av[3]);
 	philo->philosopher[i].time_to_sleep = ft_atoi(av[4]);
+	philo->philosopher[i].forks_left = true;
 	if (ac == 5)
 		philo->philosopher[i].nb_eat = -1;
 	if (ac == 6)

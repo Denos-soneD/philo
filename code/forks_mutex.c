@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 18:37:33 by machrist          #+#    #+#             */
-/*   Updated: 2024/06/04 22:05:51 by machrist         ###   ########.fr       */
+/*   Updated: 2024/06/06 19:54:27 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,19 @@ void	init_forks_mutex(t_philo *philo)
 	{
 		pthread_mutex_init(&philo->philosopher[i].forks_mutex_left, NULL);
 		if (i == philo->nb_philo - 1)
+		{
 			philo->philosopher[i].forks_mutex_right = &philo->philosopher[0
 			].forks_mutex_left;
+			philo->philosopher[i].forks_right = &philo->philosopher[0
+			].forks_left;
+		}
 		else
+		{
 			philo->philosopher[i].forks_mutex_right = &philo->philosopher[i
 				+ 1].forks_mutex_left;
+			philo->philosopher[i].forks_right = &philo->philosopher[i
+				+ 1].forks_left;
+		}
 		i++;
 	}
 }

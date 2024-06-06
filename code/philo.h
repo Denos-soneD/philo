@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 16:17:33 by machrist          #+#    #+#             */
-/*   Updated: 2024/06/04 22:05:58 by machrist         ###   ########.fr       */
+/*   Updated: 2024/06/06 19:13:12 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ typedef struct s_philospher
 	unsigned long long	last_meal;
 	pthread_t			th;
 	pthread_mutex_t		*is_dead_mutex;
+	bool				forks_left;
+	bool				*forks_right;
 	pthread_mutex_t		forks_mutex_left;
 	pthread_mutex_t		*forks_mutex_right;
 }						t_philosopher;
