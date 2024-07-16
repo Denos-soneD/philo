@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 17:15:16 by machrist          #+#    #+#             */
-/*   Updated: 2024/06/06 19:15:46 by machrist         ###   ########.fr       */
+/*   Updated: 2024/07/16 22:38:36 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,10 @@
 
 int	free_philo(t_philo *philo, char *msg)
 {
-	lock_forks(philo);
 	pthread_mutex_lock(&philo->is_dead_mutex);
 	printf("%s", msg);
 	philo->is_dead = true;
 	pthread_mutex_unlock(&philo->is_dead_mutex);
-	unlock_forks(philo);
 	pthread_mutex_destroy(&philo->is_dead_mutex);
 	destroy_forks_mutex(philo);
 	if (philo->philosopher)

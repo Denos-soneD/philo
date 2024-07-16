@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 16:17:33 by machrist          #+#    #+#             */
-/*   Updated: 2024/06/06 19:13:12 by machrist         ###   ########.fr       */
+/*   Updated: 2024/07/16 22:40:43 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,6 @@ unsigned long long		get_time_ms(void);
 int						ft_strncmp(const char *s1, const char *s2, size_t n);
 void					init_forks_mutex(t_philo *philo);
 void					destroy_forks_mutex(t_philo *philo);
-void					lock_forks(t_philo *philo);
-void					unlock_forks(t_philo *philo);
 void					philosopher_unlock_forks(t_philosopher *philosopher);
 void					start_eating(t_philosopher *philosopher);
 
