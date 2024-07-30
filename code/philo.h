@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 16:17:33 by machrist          #+#    #+#             */
-/*   Updated: 2024/07/30 15:24:12 by machrist         ###   ########.fr       */
+/*   Updated: 2024/07/30 15:28:49 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,5 +76,6 @@ void					philosopher_unlock_forks(t_philosopher *philosopher);
 void					start_eating(t_philosopher *philosopher);
 void					philosopher_lock_forks(t_philosopher *philosopher);
 bool					ft_usleep(t_philosopher *philosopher, int act);
+bool					check_is_dead(t_philosopher *philosopher);
 
 #endif

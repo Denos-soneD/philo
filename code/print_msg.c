@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 17:35:20 by machrist          #+#    #+#             */
-/*   Updated: 2024/07/30 15:23:48 by machrist         ###   ########.fr       */
+/*   Updated: 2024/07/30 15:32:39 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ bool	ft_usleep(t_philosopher *philosopher, int act)
 	else
 	{
 		time = get_time_ms() + (philosopher->time_to_die
-				- (philosopher->time_to_eat + philosopher->time_to_sleep)) - 5;
+				- (philosopher->time_to_eat + philosopher->time_to_sleep)) / 2;
 	}
 	while (get_time_ms() < time)
 	{
