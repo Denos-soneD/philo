@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 17:15:16 by machrist          #+#    #+#             */
-/*   Updated: 2024/07/16 22:38:36 by machrist         ###   ########.fr       */
+/*   Updated: 2024/07/30 12:40:58 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ void	set_philosopher(t_philo *philo, long long i, int ac, char **av)
 	philo->philosopher[i].time_to_die = ft_atoi(av[2]);
 	philo->philosopher[i].time_to_eat = ft_atoi(av[3]);
 	philo->philosopher[i].time_to_sleep = ft_atoi(av[4]);
+	philo->philosopher[i].nb_philo_eat = &philo->nb_philo_eat;
 	philo->philosopher[i].forks_left = true;
 	if (ac == 5)
 		philo->philosopher[i].nb_eat = -1;
@@ -90,6 +91,7 @@ bool	init_philo(t_philo *philo, int ac, char **av)
 	}
 	pthread_mutex_init(&philo->is_dead_mutex, NULL);
 	philo->nb_philo = ft_atoi(av[1]);
+	philo->nb_philo_eat = 0;
 	philo->start = get_time_ms();
 	philo->is_dead = false;
 	philo->philosopher = malloc(sizeof(t_philosopher) * philo->nb_philo);

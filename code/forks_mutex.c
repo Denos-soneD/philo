@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 18:37:33 by machrist          #+#    #+#             */
-/*   Updated: 2024/07/16 22:38:03 by machrist         ###   ########.fr       */
+/*   Updated: 2024/07/29 17:17:38 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,28 @@ void	destroy_forks_mutex(t_philo *philo)
 
 void	philosopher_unlock_forks(t_philosopher *philosopher)
 {
-	pthread_mutex_unlock(&philosopher->forks_mutex_left);
-	pthread_mutex_unlock(philosopher->forks_mutex_right);
+	if (philosopher->id % 2 == 0)
+	{
+		pthread_mutex_unlock(&philosopher->forks_mutex_left);
+		pthread_mutex_unlock(philosopher->forks_mutex_right);
+	}
+	else
+	{
+		pthread_mutex_unlock(philosopher->forks_mutex_right);
+		pthread_mutex_unlock(&philosopher->forks_mutex_left);
+	}
+}
+
+void	philosopher_lock_forks(t_philosopher *philosopher)
+{
+	if (philosopher->id % 2 == 0)
+	{
+		pthread_mutex_lock(&philosopher->forks_mutex_left);
+		pthread_mutex_lock(philosopher->forks_mutex_right);
+	}
+	else
+	{
+		pthread_mutex_lock(philosopher->forks_mutex_right);
+		pthread_mutex_lock(&philosopher->forks_mutex_left);
+	}
 }
