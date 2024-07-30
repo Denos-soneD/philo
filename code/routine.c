@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 20:01:12 by machrist          #+#    #+#             */
-/*   Updated: 2024/07/30 15:08:51 by machrist         ###   ########.fr       */
+/*   Updated: 2024/07/30 15:23:43 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,28 +38,6 @@ bool	check_is_dead(t_philosopher *philosopher)
 	return (false);
 }
 
-bool	ft_usleep(t_philosopher *philosopher, int act)
-{
-	unsigned long long	time;
-
-	if (act == EAT)
-		time = get_time_ms() + philosopher->time_to_eat;
-	else if (act == SLEEP)
-		time = get_time_ms() + philosopher->time_to_sleep;
-	else
-	{
-		time = get_time_ms() + (philosopher->time_to_die
-				- (philosopher->time_to_eat + philosopher->time_to_sleep)) - 5;
-	}
-	while (get_time_ms() < time)
-	{
-		if (check_is_dead(philosopher))
-			return (print_msg(philosopher, MSG_DIE), true);
-		usleep(1000);
-	}
-	return (false);
-}
-
 void	start_eating(t_philosopher *philosopher)
 {
 	print_msg(philosopher, MSG_EAT);
@@ -67,8 +45,7 @@ void	start_eating(t_philosopher *philosopher)
 	if (ft_usleep(philosopher, EAT))
 		return ;
 	philosopher->nb_eat--;
-	pthread_mutex_lock(&philosopher->forks_mutex_left);
-	pthread_mutex_lock(philosopher->forks_mutex_right);
+	philosopher_lock_forks(philosopher);
 	philosopher->forks_left = true;
 	*philosopher->forks_right = true;
 	philosopher_unlock_forks(philosopher);

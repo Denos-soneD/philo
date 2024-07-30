@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 17:35:20 by machrist          #+#    #+#             */
-/*   Updated: 2024/02/29 16:44:35 by machrist         ###   ########.fr       */
+/*   Updated: 2024/07/30 15:23:48 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,28 @@ unsigned long long	get_time_ms(void)
 	time *= 1000;
 	time += (unsigned long long)(tv.tv_usec) / 1000;
 	return (time);
+}
+
+bool	ft_usleep(t_philosopher *philosopher, int act)
+{
+	unsigned long long	time;
+
+	if (act == EAT)
+		time = get_time_ms() + philosopher->time_to_eat;
+	else if (act == SLEEP)
+		time = get_time_ms() + philosopher->time_to_sleep;
+	else
+	{
+		time = get_time_ms() + (philosopher->time_to_die
+				- (philosopher->time_to_eat + philosopher->time_to_sleep)) - 5;
+	}
+	while (get_time_ms() < time)
+	{
+		if (check_is_dead(philosopher))
+			return (print_msg(philosopher, MSG_DIE), true);
+		usleep(1000);
+	}
+	return (false);
 }
 
 void	print_msg(t_philosopher *philosopher, char *msg)
