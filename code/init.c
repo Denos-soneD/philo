@@ -6,22 +6,23 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 17:15:16 by machrist          #+#    #+#             */
-/*   Updated: 2024/07/30 15:21:26 by machrist         ###   ########.fr       */
+/*   Updated: 2024/08/10 01:49:47 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	free_philo(t_philo *philo, char *msg)
+int	free_philo(t_philo *philo, char *msg, int i)
 {
 	pthread_mutex_lock(&philo->is_dead_mutex);
 	printf("%s", msg);
 	philo->is_dead = true;
 	pthread_mutex_unlock(&philo->is_dead_mutex);
-	pthread_mutex_destroy(&philo->is_dead_mutex);
+	wait_all_threads(philo, i);
 	destroy_forks_mutex(philo);
 	if (philo->philosopher)
 		free(philo->philosopher);
+	pthread_mutex_destroy(&philo->is_dead_mutex);
 	return (1);
 }
 
@@ -29,27 +30,17 @@ bool	init_threads(t_philo *philo)
 {
 	int	i;
 
+	if (pthread_create(&philo->th, NULL, &monitor, philo))
+		return (free_philo(philo, MSG_PTHREAD_CRT, 0));
 	i = 0;
 	while (i < philo->nb_philo)
 	{
 		if (pthread_create(&philo->philosopher[i].th, NULL, &routine,
 				philo->philosopher + i))
-		{
-			free_philo(philo, MSG_PTHREAD_CRT);
-			return (true);
-		}
+			return (free_philo(philo, MSG_PTHREAD_CRT, i));
 		i++;
 	}
-	i = 0;
-	while (i < philo->nb_philo)
-	{
-		if (pthread_join(philo->philosopher[i].th, NULL))
-		{
-			free_philo(philo, MSG_PTHREAD_JOIN);
-			return (true);
-		}
-		i++;
-	}
+	wait_all_threads(philo, philo->nb_philo);
 	return (false);
 }
 
@@ -64,12 +55,13 @@ void	set_philosopher(t_philo *philo, long long i, int ac, char **av)
 	philo->philosopher[i].time_to_die = ft_atoi(av[2]);
 	philo->philosopher[i].time_to_eat = ft_atoi(av[3]);
 	philo->philosopher[i].time_to_sleep = ft_atoi(av[4]);
-	philo->philosopher[i].nb_philo_eat = &philo->nb_philo_eat;
 	philo->philosopher[i].forks_left = true;
 	if (ac == 5)
 		philo->philosopher[i].nb_eat = -1;
 	if (ac == 6)
 		philo->philosopher[i].nb_eat = ft_atoi(av[5]);
+	pthread_mutex_init(&philo->philosopher[i].is_eating_mutex, NULL);
+	philo->philosopher[i].finish_eat = false;
 }
 
 void	init_philosopher(t_philo *philo, int ac, char **av)
@@ -91,8 +83,8 @@ bool	init_philo(t_philo *philo, int ac, char **av)
 	}
 	pthread_mutex_init(&philo->is_dead_mutex, NULL);
 	philo->nb_philo = ft_atoi(av[1]);
-	philo->nb_philo_eat = 0;
 	philo->start = get_time_ms();
+	philo->nb_philo_eat = 0;
 	philo->is_dead = false;
 	philo->philosopher = malloc(sizeof(t_philosopher) * philo->nb_philo);
 	if (!philo->philosopher)

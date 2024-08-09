@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 16:17:33 by machrist          #+#    #+#             */
-/*   Updated: 2024/07/30 15:28:49 by machrist         ###   ########.fr       */
+/*   Updated: 2024/08/10 01:30:38 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # define MSG_SLEEP "is sleeping\n"
 # define MSG_THINK "is thinking\n"
 # define MSG_DIE "died\n"
+# define MSG_PTHREAD_DETACH "Error: pthread_detach failed\n"
 # define EAT 0
 # define SLEEP 1
 # define THINK 2
@@ -36,12 +37,12 @@ typedef struct s_philospher
 {
 	int					id;
 	bool				*is_dead;
+	bool				finish_eat;
 	int					*nb_philo;
 	unsigned long long	time_to_die;
 	unsigned long long	time_to_eat;
 	unsigned long long	time_to_sleep;
 	int					nb_eat;
-	int					*nb_philo_eat;
 	unsigned long long	*start;
 	unsigned long long	last_meal;
 	pthread_t			th;
@@ -50,6 +51,7 @@ typedef struct s_philospher
 	bool				*forks_right;
 	pthread_mutex_t		forks_mutex_left;
 	pthread_mutex_t		*forks_mutex_right;
+	pthread_mutex_t		is_eating_mutex;
 }						t_philosopher;
 
 void					print_msg(t_philosopher *philosopher, char *msg);
@@ -60,6 +62,7 @@ typedef struct s_philo
 	int					nb_philo_eat;
 	unsigned long long	start;
 	bool				is_dead;
+	pthread_t			th;
 	t_philosopher		*philosopher;
 	pthread_mutex_t		is_dead_mutex;
 }						t_philo;
@@ -77,5 +80,7 @@ void					start_eating(t_philosopher *philosopher);
 void					philosopher_lock_forks(t_philosopher *philosopher);
 bool					ft_usleep(t_philosopher *philosopher, int act);
 bool					check_is_dead(t_philosopher *philosopher);
+void					*monitor(void *arg);
+void					wait_all_threads(t_philo *philo, int i);
 
 #endif

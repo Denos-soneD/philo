@@ -1,32 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/19 16:17:36 by machrist          #+#    #+#             */
-/*   Updated: 2024/08/08 19:04:07 by machrist         ###   ########.fr       */
+/*   Created: 2024/08/10 01:25:36 by machrist          #+#    #+#             */
+/*   Updated: 2024/08/10 01:50:07 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int ac, char **av)
+void	wait_all_threads(t_philo *philo, int i)
 {
-	t_philo	philo;
-
-	if (ac != 5 && ac != 6)
-	{
-		printf("Error: wrong number of arguments\n");
-		return (1);
-	}
-	if (init_philo(&philo, ac, av))
-		return (1);
-	if (init_threads(&philo))
-		return (1);
-	pthread_mutex_destroy(&philo.is_dead_mutex);
-	destroy_forks_mutex(&philo);
-	free(philo.philosopher);
-	return (0);
+	pthread_join(philo->th, NULL);
+	while (i--)
+		pthread_join(philo->philosopher[i].th, NULL);
 }

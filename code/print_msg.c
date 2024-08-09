@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 17:35:20 by machrist          #+#    #+#             */
-/*   Updated: 2024/07/30 15:32:39 by machrist         ###   ########.fr       */
+/*   Updated: 2024/08/10 01:11:12 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,20 +48,15 @@ bool	ft_usleep(t_philosopher *philosopher, int act)
 
 void	print_msg(t_philosopher *philosopher, char *msg)
 {
-	unsigned long long	time;
-
 	pthread_mutex_lock(philosopher->is_dead_mutex);
-	if (*philosopher->is_dead || philosopher->nb_eat == 0)
+	if (*philosopher->is_dead)
 	{
 		pthread_mutex_unlock(philosopher->is_dead_mutex);
 		return ;
 	}
-	time = get_time_ms();
-	time = time - *philosopher->start;
-	printf("%lld %d %s", time, philosopher->id + 1, msg);
-	if (ft_strncmp(msg, MSG_DIE, 4) == 0)
-	{
+	printf("%lld %d %s", get_time_ms() - *philosopher->start,
+		philosopher->id + 1, msg);
+	if (!ft_strncmp(msg, MSG_DIE, 4))
 		*philosopher->is_dead = true;
-	}
 	pthread_mutex_unlock(philosopher->is_dead_mutex);
 }

@@ -1,9 +1,9 @@
 NAME = philo
-CFLAGS = -Wall -Wextra -Werror -pthread -g
+CFLAGS = -Wall -Wextra -Werror -pthread -g -fsanitize=thread
 CC = cc
 BUILD_DIR = build
 SRC_DIR = code/
-SRC = $(addprefix $(SRC_DIR),main.c ft_atoi.c init.c print_msg.c routine.c ft_strncmp.c forks_mutex.c)
+SRC = $(addprefix $(SRC_DIR),main.c ft_atoi.c init.c print_msg.c routine.c ft_strncmp.c forks_mutex.c monitor.c utils.c)
 HEADER = code/philo.h
 
 OBJECTS = $(SRC:%.c=$(BUILD_DIR)/%.o)
