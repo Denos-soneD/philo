@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 17:15:16 by machrist          #+#    #+#             */
-/*   Updated: 2024/08/14 17:40:15 by machrist         ###   ########.fr       */
+/*   Updated: 2024/08/14 21:14:53 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ bool	init_philo(t_philo *philo, int ac, char **av)
 	philo->is_dead = false;
 	philo->monitor_stop = false;
 	if (ac == 5)
-		philo->monitor_stop = true;						
+		philo->monitor_stop = true;
 	philo->philosopher = malloc(sizeof(t_philosopher) * philo->nb_philo);
 	if (!philo->philosopher)
 	{
