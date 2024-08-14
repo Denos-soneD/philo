@@ -6,11 +6,22 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 01:25:36 by machrist          #+#    #+#             */
-/*   Updated: 2024/08/14 21:12:01 by machrist         ###   ########.fr       */
+/*   Updated: 2024/08/14 21:30:47 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+bool	validate_arguments(int ac, char **av)
+{
+	if (ft_atoi(av[1]) < 1 || ft_atoi(av[2]) < 0 || ft_atoi(av[3]) < 0
+		|| ft_atoi(av[4]) < 0 || (ac == 6 && ft_atoi(av[5]) < 1))
+	{
+		printf("Error: wrong arguments\n");
+		return (false);
+	}
+	return (true);
+}
 
 bool	check_is_dead(t_philosopher *philosopher)
 {

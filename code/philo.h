@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 16:17:33 by machrist          #+#    #+#             */
-/*   Updated: 2024/08/14 18:00:05 by machrist         ###   ########.fr       */
+/*   Updated: 2024/08/14 21:30:59 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,5 +84,6 @@ bool					check_is_dead(t_philosopher *philosopher);
 void					*monitor(void *arg);
 void					wait_all_threads(t_philo *philo, int i);
 bool					check_is_dead(t_philosopher *philosopher);
+bool					validate_arguments(int ac, char **av);
 
 #endif

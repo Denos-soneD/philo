@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 17:15:16 by machrist          #+#    #+#             */
-/*   Updated: 2024/08/14 21:14:53 by machrist         ###   ########.fr       */
+/*   Updated: 2024/08/14 21:30:38 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ bool	init_threads(t_philo *philo)
 	if (pthread_create(&philo->th, NULL, &monitor, philo))
 		return (free_philo(philo, MSG_PTHREAD_CRT, -1));
 	i = 0;
+	philo->start = get_time_ms();
 	while (i < philo->nb_philo)
 	{
 		if (pthread_create(&philo->philosopher[i].th, NULL, &routine,
@@ -75,15 +76,10 @@ void	init_philosopher(t_philo *philo, int ac, char **av)
 
 bool	init_philo(t_philo *philo, int ac, char **av)
 {
-	if (ft_atoi(av[1]) < 1 || ft_atoi(av[2]) < 0 || ft_atoi(av[3]) < 0
-		|| ft_atoi(av[4]) < 0 || (ac == 6 && ft_atoi(av[5]) < 1))
-	{
-		printf("Error: wrong arguments\n");
+	if (!validate_arguments(ac, av))
 		return (true);
-	}
 	pthread_mutex_init(&philo->is_dead_mutex, NULL);
 	philo->nb_philo = ft_atoi(av[1]);
-	philo->start = get_time_ms();
 	philo->nb_philo_eat = 0;
 	philo->is_dead = false;
 	philo->monitor_stop = false;
