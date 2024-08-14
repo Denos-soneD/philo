@@ -6,25 +6,11 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 20:01:12 by machrist          #+#    #+#             */
-/*   Updated: 2024/08/10 01:04:54 by machrist         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:07:59 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-bool	check_is_dead(t_philosopher *philosopher)
-{
-	unsigned long long	time;
-
-	pthread_mutex_lock(philosopher->is_dead_mutex);
-	if (*philosopher->is_dead)
-		return (pthread_mutex_unlock(philosopher->is_dead_mutex), true);
-	pthread_mutex_unlock(philosopher->is_dead_mutex);
-	time = get_time_ms();
-	if (time - philosopher->last_meal > philosopher->time_to_die)
-		return (print_msg(philosopher, MSG_DIE), true);
-	return (false);
-}
 
 void	start_eating(t_philosopher *philosopher)
 {
@@ -32,11 +18,9 @@ void	start_eating(t_philosopher *philosopher)
 	philosopher->last_meal = get_time_ms();
 	if (ft_usleep(philosopher, EAT))
 		return ;
-	pthread_mutex_lock(&philosopher->is_eating_mutex);
+	philosopher_lock_forks(philosopher);
 	if (philosopher->nb_eat > 0)
 		philosopher->nb_eat--;
-	pthread_mutex_unlock(&philosopher->is_eating_mutex);
-	philosopher_lock_forks(philosopher);
 	philosopher->forks_left = true;
 	*philosopher->forks_right = true;
 	philosopher_unlock_forks(philosopher);
@@ -55,9 +39,8 @@ void	take_fork(t_philosopher *philosopher)
 	{
 		philosopher->forks_left = false;
 		*philosopher->forks_right = false;
-		print_msg(philosopher, MSG_FORK);
-		print_msg(philosopher, MSG_FORK);
 		philosopher_unlock_forks(philosopher);
+		print_msg(philosopher, MSG_FORK);
 		start_eating(philosopher);
 	}
 	else
@@ -71,12 +54,13 @@ void	*routine(void *arg)
 	philosopher = (t_philosopher *)arg;
 	if (*philosopher->nb_philo == 1)
 	{
-		print_msg(philosopher, MSG_FORK);
+		printf("%lld %d %s", get_time_ms() - *philosopher->start,
+			philosopher->id + 1, MSG_FORK);
 		usleep(philosopher->time_to_die * 1000);
 		print_msg(philosopher, MSG_DIE);
 		return (NULL);
 	}
-	if (philosopher->id % 2)
+	if (!(philosopher->id % 2))
 		usleep(10000);
 	while (!check_is_dead(philosopher))
 		take_fork(philosopher);

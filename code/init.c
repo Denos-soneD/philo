@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 17:15:16 by machrist          #+#    #+#             */
-/*   Updated: 2024/08/10 01:49:47 by machrist         ###   ########.fr       */
+/*   Updated: 2024/08/14 17:40:15 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int	free_philo(t_philo *philo, char *msg, int i)
 	if (philo->philosopher)
 		free(philo->philosopher);
 	pthread_mutex_destroy(&philo->is_dead_mutex);
+	pthread_mutex_destroy(&philo->monitor_mutex);
 	return (1);
 }
 
@@ -31,7 +32,7 @@ bool	init_threads(t_philo *philo)
 	int	i;
 
 	if (pthread_create(&philo->th, NULL, &monitor, philo))
-		return (free_philo(philo, MSG_PTHREAD_CRT, 0));
+		return (free_philo(philo, MSG_PTHREAD_CRT, -1));
 	i = 0;
 	while (i < philo->nb_philo)
 	{
@@ -60,7 +61,6 @@ void	set_philosopher(t_philo *philo, long long i, int ac, char **av)
 		philo->philosopher[i].nb_eat = -1;
 	if (ac == 6)
 		philo->philosopher[i].nb_eat = ft_atoi(av[5]);
-	pthread_mutex_init(&philo->philosopher[i].is_eating_mutex, NULL);
 	philo->philosopher[i].finish_eat = false;
 }
 
@@ -86,6 +86,9 @@ bool	init_philo(t_philo *philo, int ac, char **av)
 	philo->start = get_time_ms();
 	philo->nb_philo_eat = 0;
 	philo->is_dead = false;
+	philo->monitor_stop = false;
+	if (ac == 5)
+		philo->monitor_stop = true;						
 	philo->philosopher = malloc(sizeof(t_philosopher) * philo->nb_philo);
 	if (!philo->philosopher)
 	{
@@ -93,6 +96,7 @@ bool	init_philo(t_philo *philo, int ac, char **av)
 		pthread_mutex_destroy(&philo->is_dead_mutex);
 		return (true);
 	}
+	pthread_mutex_init(&philo->monitor_mutex, NULL);
 	init_philosopher(philo, ac, av);
 	init_forks_mutex(philo);
 	return (false);

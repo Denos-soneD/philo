@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 18:37:33 by machrist          #+#    #+#             */
-/*   Updated: 2024/08/10 01:04:21 by machrist         ###   ########.fr       */
+/*   Updated: 2024/08/14 17:12:20 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ void	destroy_forks_mutex(t_philo *philo)
 	while (i < philo->nb_philo)
 	{
 		pthread_mutex_destroy(&philo->philosopher[i].forks_mutex_left);
-		pthread_mutex_destroy(&philo->philosopher[i].is_eating_mutex);
 		i++;
 	}
 }
