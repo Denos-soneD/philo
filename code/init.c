@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 17:15:16 by machrist          #+#    #+#             */
-/*   Updated: 2024/09/02 15:49:01 by machrist         ###   ########.fr       */
+/*   Updated: 2024/09/02 16:17:40 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,13 @@ bool	init_philo(t_philo *philo, int ac, char **av)
 {
 	if (!validate_arguments(ac, av))
 		return (true);
-	pthread_mutex_init(&philo->is_dead_mutex, NULL);
+	if (pthread_mutex_init(&philo->is_dead_mutex, NULL))
+		return (printf(MSG_PTHREAD_MUTEX), true);
+	if (pthread_mutex_init(&philo->monitor_mutex, NULL))
+	{
+		pthread_mutex_destroy(&philo->is_dead_mutex);
+		return (printf(MSG_PTHREAD_MUTEX), true);
+	}
 	philo->nb_philo = ft_atoi(av[1]);
 	philo->nb_philo_eat = 0;
 	philo->is_dead = false;
@@ -87,17 +93,10 @@ bool	init_philo(t_philo *philo, int ac, char **av)
 	if (ac == 5)
 		philo->monitor_stop = true;
 	philo->philosopher = malloc(sizeof(t_philosopher) * philo->nb_philo);
-	if (!philo->philosopher || philo->start == -1)
-	{
-		if (philo->philosopher)
-			free(philo->philosopher);
-		else
-			printf(MSG_MALLOC);
-		pthread_mutex_destroy(&philo->is_dead_mutex);
+	if (clear_init(philo))
 		return (true);
-	}
-	pthread_mutex_init(&philo->monitor_mutex, NULL);
 	init_philosopher(philo, ac, av);
-	init_forks_mutex(philo);
+	if (init_forks_mutex(philo))
+		return (true);
 	return (false);
 }

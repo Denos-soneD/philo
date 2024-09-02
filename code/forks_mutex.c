@@ -6,26 +6,27 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 18:37:33 by machrist          #+#    #+#             */
-/*   Updated: 2024/08/14 17:12:20 by machrist         ###   ########.fr       */
+/*   Updated: 2024/09/02 16:18:03 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	init_forks_mutex(t_philo *philo)
+bool	init_forks_mutex(t_philo *philo)
 {
 	int	i;
 
 	i = 0;
 	while (i < philo->nb_philo)
 	{
-		pthread_mutex_init(&philo->philosopher[i].forks_mutex_left, NULL);
+		if (pthread_mutex_init(&philo->philosopher[i].forks_mutex_left, NULL))
+			return (clear_fork_mutex(philo, i));
 		if (i == philo->nb_philo - 1)
 		{
-			philo->philosopher[i].forks_mutex_right = &philo->philosopher[0
-			].forks_mutex_left;
-			philo->philosopher[i].forks_right = &philo->philosopher[0
-			].forks_left;
+			philo->philosopher[i].forks_mutex_right = \
+				&philo->philosopher[0].forks_mutex_left;
+			philo->philosopher[i].forks_right = \
+				&philo->philosopher[0].forks_left;
 		}
 		else
 		{
@@ -36,6 +37,7 @@ void	init_forks_mutex(t_philo *philo)
 		}
 		i++;
 	}
+	return (false);
 }
 
 void	destroy_forks_mutex(t_philo *philo)

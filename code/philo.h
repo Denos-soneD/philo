@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 16:17:33 by machrist          #+#    #+#             */
-/*   Updated: 2024/09/02 15:47:25 by machrist         ###   ########.fr       */
+/*   Updated: 2024/09/02 16:08:06 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 
 # define MSG_MALLOC "Error: malloc failed\n"
 # define MSG_PTHREAD_CRT "Error: pthread_create failed\n"
+# define MSG_PTHREAD_MUTEX "Error: pthread_mutex_init failed\n"
 # define MSG_PTHREAD_JOIN "Error: pthread_join failed\n"
 # define MSG_FORK "has taken a fork\n"
 # define MSG_EAT "is eating\n"
@@ -74,7 +75,7 @@ bool				init_philo(t_philo *philo, int ac, char **av);
 void				*routine(void *arg);
 long long			get_time_ms(void);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
-void				init_forks_mutex(t_philo *philo);
+bool				init_forks_mutex(t_philo *philo);
 void				destroy_forks_mutex(t_philo *philo);
 void				philosopher_unlock_forks(t_philosopher *philosopher);
 void				start_eating(t_philosopher *philosopher);
@@ -85,5 +86,7 @@ bool				check_is_dead(t_philosopher *philosopher,
 void				*monitor(void *arg);
 void				wait_all_threads(t_philo *philo, int i);
 bool				validate_arguments(int ac, char **av);
+bool				clear_init(t_philo *philo);
+bool				clear_fork_mutex(t_philo *philo, int i);
 
 #endif
