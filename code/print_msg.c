@@ -6,23 +6,29 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 17:35:20 by machrist          #+#    #+#             */
-/*   Updated: 2024/08/14 21:14:26 by machrist         ###   ########.fr       */
+/*   Updated: 2024/09/02 15:47:33 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-unsigned long long	get_time_ms(void)
+long long	get_time_ms(void)
 {
 	struct timeval	tv;
+	int				ret;
 
-	gettimeofday(&tv, NULL);
-	return ((unsigned long long)(tv.tv_sec * 1000 + tv.tv_usec / 1000));
+	ret = gettimeofday(&tv, NULL);
+	if (ret == -1)
+	{
+		printf("Error: gettimeofday failed\n");
+		return (-1);
+	}
+	return ((long long)(tv.tv_sec * 1000 + tv.tv_usec / 1000));
 }
 
 void	print_msg(t_philosopher *philosopher, char *msg)
 {
-	unsigned long long	time;
+	long long	time;
 
 	pthread_mutex_lock(philosopher->is_dead_mutex);
 	if (*philosopher->is_dead)
@@ -41,7 +47,7 @@ void	print_msg(t_philosopher *philosopher, char *msg)
 	else
 		printf("%lld %d %s", time - *philosopher->start, philosopher->id + 1,
 			msg);
-	if (!ft_strncmp(msg, MSG_DIE, 4))
+	if (!ft_strncmp(msg, MSG_DIE, 4) || time == -1)
 		*philosopher->is_dead = true;
 	pthread_mutex_unlock(philosopher->is_dead_mutex);
 }

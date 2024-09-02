@@ -6,7 +6,7 @@
 /*   By: machrist <machrist@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 20:01:12 by machrist          #+#    #+#             */
-/*   Updated: 2024/08/14 21:14:38 by machrist         ###   ########.fr       */
+/*   Updated: 2024/09/02 15:30:16 by machrist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	start_eating(t_philosopher *philosopher)
 	if (ft_usleep(philosopher, SLEEP))
 		return ;
 	print_msg(philosopher, MSG_THINK);
+	if (ft_usleep(philosopher, THINK))
+		return ;
 }
 
 void	take_fork(t_philosopher *philosopher)
@@ -60,7 +62,7 @@ void	*routine(void *arg)
 	}
 	if (!(philosopher->id % 2))
 		usleep(60000);
-	while (!check_is_dead(philosopher))
+	while (!check_is_dead(philosopher, get_time_ms()))
 		take_fork(philosopher);
 	return (NULL);
 }
